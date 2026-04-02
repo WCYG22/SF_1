@@ -22,6 +22,7 @@ import {
   Heart,
   Calendar,
 } from 'lucide-react';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { format, parseISO } from 'date-fns';
 import { searchFlight, Itinerary, FlightLeg } from './services/flightService';
 import { Card, Badge } from './components/UI';
@@ -854,6 +855,7 @@ export default function App() {
           )}
         </AnimatePresence>
       </main>
+      <SpeedInsights />
     </div>
   );
 }
