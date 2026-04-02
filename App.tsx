@@ -355,7 +355,7 @@ export default function App() {
       </nav>
 
       <main className="max-w-4xl mx-auto px-4 py-12 relative z-10">
-        <AnimatePresence mode="wait">
+        <div>
           {selectedItinerary ? (
             <ItineraryDetailView 
               itinerary={selectedItinerary} 
@@ -852,7 +852,7 @@ export default function App() {
               </div>
             </motion.div>
           )}
-        </AnimatePresence>
+        </div>
       </main>
     </div>
   );
