@@ -664,8 +664,8 @@ export default function App() {
                     const filteredSaved = savedItineraries.filter(saved => {
                       if (!saved.legs) return false;
                       const matchesSearch = saved.legs.some((l: FlightLeg) => 
-                        l.origin?.city?.toLowerCase().includes(savedSearchQuery.toLowerCase()) ||
-                        l.destination?.city?.toLowerCase().includes(savedSearchQuery.toLowerCase()) ||
+                        l.departure?.city?.toLowerCase().includes(savedSearchQuery.toLowerCase()) ||
+                        l.arrival?.city?.toLowerCase().includes(savedSearchQuery.toLowerCase()) ||
                         l.airline?.toLowerCase().includes(savedSearchQuery.toLowerCase())
                       );
                       const matchesAirline = !savedFilterAirline || saved.legs.some((l: FlightLeg) => l.airline === savedFilterAirline);

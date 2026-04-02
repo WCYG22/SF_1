@@ -122,11 +122,10 @@ export async function searchFlight(query: string, useDemo: boolean = false): Pro
     return DEMO_ITINERARIES;
   }
 
-  const ai = new GoogleGenerativeAI({ apiKey });
+  const ai = new GoogleGenerativeAI(apiKey);
 
   try {
-    const response = await ai.getGenerativeModel({ model: "gemini-1.5-flash" }).generateContent({
-      contents: `Search for flight itineraries for query: "${query}". 
+    const response = await ai.getGenerativeModel({ model: "gemini-1.5-flash" }).generateContent(`Search for flight itineraries for query: "${query}". 
       Return a list of realistic Itinerary objects. 
       Each itinerary can have 1 or 2 legs (for connections).
       
@@ -138,8 +137,7 @@ export async function searchFlight(query: string, useDemo: boolean = false): Pro
       - connectionRiskValue (0-100%)
       - price (in RM)
       - disruptionProbability for each leg.
-      Make the data look extremely realistic and varied.`,
-    });
+      Make the data look extremely realistic and varied.`);
 
     const text = response.response?.text?.() || response.response?.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
     const data = JSON.parse(text);
@@ -192,19 +190,17 @@ export async function trackFlight(flightNumber: string, useDemo: boolean = false
     };
   }
 
-  const ai = new GoogleGenerativeAI({ apiKey });
+  const ai = new GoogleGenerativeAI(apiKey);
 
   try {
-    const response = await ai.getGenerativeModel({ model: "gemini-1.5-flash" }).generateContent({
-      contents: `Search for the real-time status of flight ${flightNumber}. 
+    const response = await ai.getGenerativeModel({ model: "gemini-1.5-flash" }).generateContent(`Search for the real-time status of flight ${flightNumber}. 
       Provide current telemetry, aircraft details, and progress if the flight is currently in the air.
       If the flight is scheduled or landed, provide the most recent or upcoming data.
       
       CRITICAL: All times (origin.time, destination.time, estimatedArrival) MUST be in the LOCAL TIME of the respective airport. 
       For example, if a flight departs KUL (UTC+8) and arrives in HAN (UTC+7), the arrival time must be shown in HAN local time (UTC+7).
       
-      Return a single LiveFlightData object.`,
-    });
+      Return a single LiveFlightData object.`);
 
     const text = response.response?.text?.() || response.response?.candidates?.[0]?.content?.parts?.[0]?.text || "null";
     const data = JSON.parse(text);
