@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
 import { format, parseISO } from 'date-fns';
 import { 
   Plane, 
@@ -8,8 +7,7 @@ import {
   Clock, 
   Navigation, 
   Wind, 
-  ShieldCheck, 
-  Map as MapIcon,
+  ShieldCheck,
 } from 'lucide-react';
 import { Card, Badge } from './UI';
 import { trackFlight, LiveFlightData } from '../services/flightService';
@@ -114,10 +112,8 @@ export const LiveFlightView: React.FC<LiveFlightViewProps> = ({ isDemoMode = fal
       </Card>
 
       {error === "RATE_LIMIT" && (
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-accent/10 border border-accent/20 p-6 rounded-2xl space-y-4"
+        <div 
+          className="bg-accent/10 border border-accent/20 p-6 rounded-2xl space-y-4 animate-in fade-in"
         >
           <div className="flex items-center gap-3 text-accent">
             <div className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center shrink-0">
@@ -136,20 +132,18 @@ export const LiveFlightView: React.FC<LiveFlightViewProps> = ({ isDemoMode = fal
               Use Demo Data
             </button>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {error && error !== "RATE_LIMIT" && (
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl flex items-center gap-3 text-red-400"
+        <div 
+          className="bg-red-500/10 border border-red-500/20 p-4 rounded-2xl flex items-center gap-3 text-red-400 animate-in fade-in"
         >
           <div className="w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center shrink-0">
             <Activity className="w-4 h-4" />
           </div>
           <p className="text-xs font-bold">{error}</p>
-        </motion.div>
+        </div>
       )}
 
       {isDemoMode && !error && (
@@ -160,10 +154,8 @@ export const LiveFlightView: React.FC<LiveFlightViewProps> = ({ isDemoMode = fal
       )}
 
       {tracking && !loading && (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-6"
+        <div 
+          className="space-y-6 animate-in fade-in"
         >
           {/* Main Tracking Card */}
           <Card className="relative overflow-hidden">
@@ -193,12 +185,9 @@ export const LiveFlightView: React.FC<LiveFlightViewProps> = ({ isDemoMode = fal
                     </span>
                   )}
                   {tracking.status === 'IN AIR' ? (
-                    <motion.span
-                      animate={{ opacity: [1, 0.6, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
+                    <span className="animate-pulse">
                       {tracking.status}
-                    </motion.span>
+                    </span>
                   ) : (
                     tracking.status
                   )}
@@ -218,22 +207,18 @@ export const LiveFlightView: React.FC<LiveFlightViewProps> = ({ isDemoMode = fal
 
                 <div className="flex flex-col items-center justify-center px-4">
                   <div className="w-full h-1 bg-white/5 rounded-full relative mb-4 overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: `${tracking.progress}%` }}
-                      className="absolute top-0 left-0 h-full bg-accent shadow-[0_0_10px_rgba(242,125,38,0.5)]"
+                    <div 
+                      className="absolute top-0 left-0 h-full bg-accent shadow-[0_0_10px_rgba(242,125,38,0.5)] transition-all duration-500"
+                      style={{ width: `${tracking.progress}%` }}
                     />
-                    <motion.div 
-                      animate={{ left: `${tracking.progress}%` }}
-                      className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2"
+                    <div 
+                      className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 transition-all duration-500"
+                      style={{ left: `${tracking.progress}%` }}
                     >
-                      <motion.div
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
+                      <div className="animate-pulse">
                         <Plane className="w-4 h-4 text-accent rotate-90 fill-accent" />
-                      </motion.div>
-                    </motion.div>
+                      </div>
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 bg-accent rounded-full animate-pulse shadow-[0_0_5px_rgba(242,125,38,0.8)]" />
@@ -305,23 +290,19 @@ export const LiveFlightView: React.FC<LiveFlightViewProps> = ({ isDemoMode = fal
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <div className="text-[10px] text-white/40 font-bold uppercase">Altitude</div>
-                  <motion.div 
-                    animate={{ opacity: [1, 0.7, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="text-sm font-bold mono text-white"
+                  <div 
+                    className="text-sm font-bold mono text-white animate-pulse"
                   >
                     {tracking.altitude.toLocaleString()} FT
-                  </motion.div>
+                  </div>
                 </div>
                 <div className="flex justify-between items-center">
                   <div className="text-[10px] text-white/40 font-bold uppercase">Ground Speed</div>
-                  <motion.div 
-                    animate={{ opacity: [1, 0.7, 1] }}
-                    transition={{ duration: 2, repeat: Infinity, delay: 1 }}
-                    className="text-sm font-bold mono text-white"
+                  <div 
+                    className="text-sm font-bold mono text-white animate-pulse"
                   >
                     {tracking.speed} KM/H
-                  </motion.div>
+                  </div>
                 </div>
                 <div className="h-1 w-full bg-white/5 rounded-full mt-2 overflow-hidden">
                   <div className="h-full bg-green-500/40 w-3/4 animate-pulse" />
@@ -361,25 +342,15 @@ export const LiveFlightView: React.FC<LiveFlightViewProps> = ({ isDemoMode = fal
             
             {/* Radar Scanning Effect */}
             <div className="absolute inset-0">
-              <motion.div 
-                animate={{ 
-                  rotate: 360,
-                  opacity: [0.3, 0.6, 0.3]
-                }}
-                transition={{ 
-                  rotate: { duration: 10, repeat: Infinity, ease: "linear" },
-                  opacity: { duration: 2, repeat: Infinity, ease: "easeInOut" }
-                }}
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-accent/10 to-transparent rounded-full origin-center pointer-events-none"
-                style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%)' }}
+              <div 
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-gradient-to-r from-accent/10 to-transparent rounded-full origin-center pointer-events-none animate-spin"
+                style={{ clipPath: 'polygon(50% 50%, 100% 0, 100% 100%)', animationDuration: '10s' }}
               />
               {[1, 2, 3].map((i) => (
-                <motion.div
+                <div
                   key={i}
-                  initial={{ scale: 0, opacity: 0.5 }}
-                  animate={{ scale: 2, opacity: 0 }}
-                  transition={{ duration: 4, repeat: Infinity, delay: i * 1.3, ease: "easeOut" }}
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-accent/20 rounded-full pointer-events-none"
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 border border-accent/20 rounded-full pointer-events-none animate-pulse"
+                  style={{ animationDelay: `${i * 1.3}s` }}
                 />
               ))}
             </div>
@@ -396,15 +367,17 @@ export const LiveFlightView: React.FC<LiveFlightViewProps> = ({ isDemoMode = fal
                 />
                 
                 {/* Completed Path */}
-                <motion.path 
+                <path 
                   d="M 20 50 Q 200 -20 380 50" 
                   fill="none" 
                   stroke="url(#pathGradient)" 
                   strokeWidth="3" 
                   strokeLinecap="round"
-                  initial={{ pathLength: 0 }}
-                  animate={{ pathLength: tracking.progress / 100 }}
-                  transition={{ duration: 2, ease: "easeOut" }}
+                  style={{ 
+                    strokeDasharray: '100%',
+                    strokeDashoffset: `${100 - tracking.progress}%`,
+                    transition: 'stroke-dashoffset 0.5s ease-out'
+                  }}
                 />
 
                 <defs>
@@ -423,25 +396,22 @@ export const LiveFlightView: React.FC<LiveFlightViewProps> = ({ isDemoMode = fal
                 <text x="380" y="70" className="fill-white/40 text-[8px] font-black mono" textAnchor="middle">{tracking.destination.airport}</text>
 
                 {/* Moving Plane */}
-                <motion.g
-                  initial={{ offsetDistance: "0%" }}
-                  animate={{ offsetDistance: `${tracking.progress}%` }}
-                  transition={{ duration: 2, ease: "easeOut" }}
+                <g
                   style={{ 
                     offsetPath: "path('M 20 50 Q 200 -20 380 50')",
-                    offsetRotate: "auto 90deg"
+                    offsetRotate: "auto 90deg",
+                    offsetDistance: `${tracking.progress}%`,
+                    transition: 'offset-distance 0.5s ease-out'
                   }}
                 >
                   <g className="text-accent">
-                    <motion.circle 
-                      animate={{ scale: [1, 1.5, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
+                    <circle 
                       r="8" 
-                      className="fill-accent/20" 
+                      className="fill-accent/20 animate-pulse" 
                     />
                     <Plane className="w-5 h-5 -translate-x-1/2 -translate-y-1/2 fill-accent" />
                   </g>
-                </motion.g>
+                </g>
               </svg>
             </div>
 
@@ -450,13 +420,11 @@ export const LiveFlightView: React.FC<LiveFlightViewProps> = ({ isDemoMode = fal
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 bg-accent rounded-full animate-ping" />
-                  <motion.span 
-                    animate={{ opacity: [1, 0.5, 1] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="text-[10px] font-black text-accent uppercase tracking-widest"
+                  <span 
+                    className="text-[10px] font-black text-accent uppercase tracking-widest animate-pulse"
                   >
                     Live Radar Active
-                  </motion.span>
+                  </span>
                 </div>
                 <div className="text-[8px] text-white/30 font-bold uppercase tracking-tighter">
                   LAT: { (3.1390 + (Math.random() * 0.1)).toFixed(4) } • LON: { (101.6869 + (Math.random() * 0.1)).toFixed(4) }
@@ -468,7 +436,7 @@ export const LiveFlightView: React.FC<LiveFlightViewProps> = ({ isDemoMode = fal
               </div>
             </div>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {!tracking && !loading && (
