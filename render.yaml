@@ -3,7 +3,7 @@ services:
     name: sf-1
     env: node
     buildCommand: npm install && npm run build
-    startCommand: npm run preview
+    startCommand: npm start
     envVars:
       - key: VITE_FIREBASE_API_KEY
         sync: false
