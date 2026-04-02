@@ -1,4 +1,4 @@
-# Flight Tracker
+# SF_1 - Flight Tracker
 
 A real-time flight tracking application built with React, TypeScript, and Firebase.
 
@@ -47,4 +47,3 @@ This project is configured for deployment on Render.
 - TypeScript
 - Vite
 - Firebase
-- Tailwind CSS (if used)
