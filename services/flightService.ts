@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // Cache implementation
 const CACHE_PREFIX = 'smartflight_cache_';
@@ -116,11 +116,16 @@ export async function searchFlight(query: string, useDemo: boolean = false): Pro
   const cachedData = getFromCache(cacheKey);
   if (cachedData) return cachedData;
 
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
+  if (!apiKey) {
+    console.warn("GEMINI_API_KEY not set, returning demo data");
+    return DEMO_ITINERARIES;
+  }
+
+  const ai = new GoogleGenerativeAI({ apiKey });
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+    const response = await ai.getGenerativeModel({ model: "gemini-1.5-flash" }).generateContent({
       contents: `Search for flight itineraries for query: "${query}". 
       Return a list of realistic Itinerary objects. 
       Each itinerary can have 1 or 2 legs (for connections).
@@ -134,52 +139,6 @@ export async function searchFlight(query: string, useDemo: boolean = false): Pro
       - price (in RM)
       - disruptionProbability for each leg.
       Make the data look extremely realistic and varied.`,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              id: { type: Type.STRING },
-              totalDuration: { type: Type.STRING },
-              reliabilityScore: { type: Type.NUMBER },
-              connectionRisk: { type: Type.STRING, enum: ['LOW', 'MEDIUM', 'HIGH'] },
-              connectionRiskValue: { type: Type.NUMBER },
-              status: { type: Type.STRING, enum: ['RELIABLE', 'CAUTION', 'HIGH RISK'] },
-              price: { type: Type.NUMBER },
-              legs: {
-                type: Type.ARRAY,
-                items: {
-                  type: Type.OBJECT,
-                  properties: {
-                    id: { type: Type.STRING },
-                    flightNumber: { type: Type.STRING },
-                    airline: { type: Type.STRING },
-                    departure: {
-                      type: Type.OBJECT,
-                      properties: {
-                        airport: { type: Type.STRING },
-                        city: { type: Type.STRING },
-                        scheduled: { type: Type.STRING, description: "ISO 8601 timestamp in local time" },
-                      }
-                    },
-                    arrival: {
-                      type: Type.OBJECT,
-                      properties: {
-                        airport: { type: Type.STRING },
-                        city: { type: Type.STRING },
-                        scheduled: { type: Type.STRING, description: "ISO 8601 timestamp in local time" },
-                      }
-                    },
-                    disruptionProbability: { type: Type.NUMBER }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     });
 
     const data = JSON.parse(response.text || "[]");
@@ -215,11 +174,27 @@ export async function trackFlight(flightNumber: string, useDemo: boolean = false
   const cachedData = getFromCache(cacheKey);
   if (cachedData) return cachedData;
 
-  const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
+  if (!apiKey) {
+    console.warn("GEMINI_API_KEY not set, returning demo data");
+    return {
+      flightNumber: flightNumber || 'MH123',
+      airline: 'Malaysia Airlines',
+      origin: { airport: 'KUL', city: 'Kuala Lumpur', time: new Date().toISOString(), terminal: 'M', gate: 'C12' },
+      destination: { airport: 'LHR', city: 'London', time: new Date(Date.now() + 43200000).toISOString(), terminal: '4', gate: 'B3' },
+      status: 'IN AIR',
+      progress: 45,
+      altitude: 36000,
+      speed: 850,
+      aircraft: { model: 'Airbus A350-900', age: '4 years', registration: '9M-MAC' },
+      estimatedArrival: new Date(Date.now() + 24000000).toISOString()
+    };
+  }
+
+  const ai = new GoogleGenerativeAI({ apiKey });
 
   try {
-    const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+    const response = await ai.getGenerativeModel({ model: "gemini-1.5-flash" }).generateContent({
       contents: `Search for the real-time status of flight ${flightNumber}. 
       Provide current telemetry, aircraft details, and progress if the flight is currently in the air.
       If the flight is scheduled or landed, provide the most recent or upcoming data.
@@ -228,50 +203,6 @@ export async function trackFlight(flightNumber: string, useDemo: boolean = false
       For example, if a flight departs KUL (UTC+8) and arrives in HAN (UTC+7), the arrival time must be shown in HAN local time (UTC+7).
       
       Return a single LiveFlightData object.`,
-      config: {
-        tools: [{ googleSearch: {} }],
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            flightNumber: { type: Type.STRING },
-            airline: { type: Type.STRING },
-            origin: {
-              type: Type.OBJECT,
-              properties: {
-                airport: { type: Type.STRING },
-                city: { type: Type.STRING },
-                time: { type: Type.STRING, description: "ISO 8601 timestamp in local time" },
-                terminal: { type: Type.STRING },
-                gate: { type: Type.STRING }
-              }
-            },
-            destination: {
-              type: Type.OBJECT,
-              properties: {
-                airport: { type: Type.STRING },
-                city: { type: Type.STRING },
-                time: { type: Type.STRING, description: "ISO 8601 timestamp in local time" },
-                terminal: { type: Type.STRING },
-                gate: { type: Type.STRING }
-              }
-            },
-            status: { type: Type.STRING, enum: ['IN AIR', 'SCHEDULED', 'LANDED', 'DELAYED'] },
-            progress: { type: Type.NUMBER, description: "Percentage of flight completed (0-100)" },
-            altitude: { type: Type.NUMBER, description: "Current altitude in feet" },
-            speed: { type: Type.NUMBER, description: "Current ground speed in km/h" },
-            aircraft: {
-              type: Type.OBJECT,
-              properties: {
-                model: { type: Type.STRING },
-                age: { type: Type.STRING },
-                registration: { type: Type.STRING }
-              }
-            },
-            estimatedArrival: { type: Type.STRING, description: "ISO 8601 timestamp in local time" }
-          }
-        }
-      }
     });
 
     const data = JSON.parse(response.text || "null");
