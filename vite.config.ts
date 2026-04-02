@@ -12,5 +12,10 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true
+  },
+  preview: {
+    port: 3000,
+    host: '0.0.0.0',
+    allowedHosts: ['sf-1-ee8q.onrender.com', 'localhost']
   }
 })
