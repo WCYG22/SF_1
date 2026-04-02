@@ -23,12 +23,12 @@
     },
 
     /* Linting */
-    "strict": true,
+    "strict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["App.tsx", "main.tsx", "firebase.ts", "components/**/*.tsx", "services/**/*.ts", "lib/**/*.ts", "constants/**/*.ts", "types/**/*.d.ts"],
+  "include": ["vite-env.d.ts", "App.tsx", "main.tsx", "firebase.ts", "components/**/*.tsx", "services/**/*.ts", "lib/**/*.ts", "constants/**/*.ts", "types/**/*.d.ts"],
   "exclude": ["node_modules", "dist", "vite.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

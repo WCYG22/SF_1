@@ -629,7 +629,7 @@ export default function App() {
                     className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-xs focus:border-accent outline-none transition-all"
                   >
                     <option value="">All Airlines</option>
-                    {Array.from(new Set(savedItineraries.flatMap(s => s.legs.map(l => l.airline)))).map(airline => (
+                    {Array.from(new Set(savedItineraries.flatMap(s => s.legs.map((l: FlightLeg) => l.airline)))).map(airline => (
                       <option key={airline} value={airline}>{airline}</option>
                     ))}
                   </select>
@@ -663,12 +663,12 @@ export default function App() {
                   {(() => {
                     const filteredSaved = savedItineraries.filter(saved => {
                       if (!saved.legs) return false;
-                      const matchesSearch = saved.legs.some(l => 
+                      const matchesSearch = saved.legs.some((l: FlightLeg) => 
                         l.origin?.city?.toLowerCase().includes(savedSearchQuery.toLowerCase()) ||
                         l.destination?.city?.toLowerCase().includes(savedSearchQuery.toLowerCase()) ||
                         l.airline?.toLowerCase().includes(savedSearchQuery.toLowerCase())
                       );
-                      const matchesAirline = !savedFilterAirline || saved.legs.some(l => l.airline === savedFilterAirline);
+                      const matchesAirline = !savedFilterAirline || saved.legs.some((l: FlightLeg) => l.airline === savedFilterAirline);
                       return matchesSearch && matchesAirline;
                     });
 
