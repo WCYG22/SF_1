@@ -141,7 +141,8 @@ export async function searchFlight(query: string, useDemo: boolean = false): Pro
       Make the data look extremely realistic and varied.`,
     });
 
-    const data = JSON.parse(response.text || "[]");
+    const text = response.response?.text?.() || response.response?.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
+    const data = JSON.parse(text);
     const sortedData = data.sort((a: Itinerary, b: Itinerary) => b.reliabilityScore - a.reliabilityScore);
     setToCache(cacheKey, sortedData);
     return sortedData;
@@ -205,7 +206,8 @@ export async function trackFlight(flightNumber: string, useDemo: boolean = false
       Return a single LiveFlightData object.`,
     });
 
-    const data = JSON.parse(response.text || "null");
+    const text = response.response?.text?.() || response.response?.candidates?.[0]?.content?.parts?.[0]?.text || "null";
+    const data = JSON.parse(text);
     if (data) setToCache(cacheKey, data);
     return data;
   } catch (e: any) {
