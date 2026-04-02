@@ -28,6 +28,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [".", "components", "services", "lib", "constants", "types"],
+  "include": ["App.tsx", "main.tsx", "firebase.ts", "components/**/*.tsx", "services/**/*.ts", "lib/**/*.ts", "constants/**/*.ts", "types/**/*.d.ts"],
+  "exclude": ["node_modules", "dist", "vite.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
